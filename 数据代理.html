@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+
+</head>
+
+<body>
+    <script>
+        var number = "19";
+        var obj = {
+            x: "张三111"
+        }
+        var obj2 = {
+            y: "张三222"
+        }
+        Object.defineProperty(obj2, 'x', {
+            get() {
+                return obj.x;
+            },
+            set(v) {
+                obj.x = v;
+            }
+        })
+        console.log(obj);
+        console.log(obj2);
+    </script>
+</body>
+
+</html>

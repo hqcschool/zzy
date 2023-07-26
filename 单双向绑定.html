@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+
+</head>
+
+<body>
+
+    <div id="app">
+        <!-- 单向 -->
+        <!-- <input type='text' v-bind:value="val"> -->
+        <!-- 双向 -->
+        <!-- <input type='text' v-model:value="val"> -->
+        <!-- 简写 -->
+        <input type='text' v-model="val">
+    </div>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                val: "ikun",
+            },
+        });
+    </script>
+</body>
+
+</html>

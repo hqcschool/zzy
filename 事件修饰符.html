@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+
+</head>
+
+<body>
+    <div id="wai" style="width:300px;height:300px;padding:20px;background-color: skyblue">
+        外层div
+        <div id="nei" style="width:100px;height:100px;background-color: orange">
+            内层div
+        </div>
+    </div>
+    <div id="app">
+        <a href="http://www.baidu.com" @click.prevent="jump">百度</a>
+    </div>
+    <script>
+        waiceng = document.getElementById('wai')
+        waiceng.addEventListener('click', function (event) {
+            event.stopPropagation();
+            console.log('外层div');
+        })
+        neiceng = document.getElementById('nei')
+        neiceng.addEventListener('click', function (event) {
+            console.log('nei div');
+        })
+        const vm = new Vue({
+
+        })
+    </script>
+</body>
+
+</html>

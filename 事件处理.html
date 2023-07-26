@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 原生 -->
+        <button onclick="fun()">点击1</button> <!-- 必须有括号 -->
+
+        <button v-on:click="fun">点击2</button>
+
+
+        <!-- 这里也可以进行简写 -->
+        <button @click="show">点击3</button>
+        <button v-on:click="fun2(1,this,$event,2,3)">传参</button> <!-- this指向window -->
+    </div>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                value: 'xh',
+                show: function () {
+                    alert('s')
+                }
+                //data里面也能实现但要注意不能重名
+            },
+            methods: {
+                fun() {
+                    alert("hello");
+                    console.log(event.target.innerTe);
+
+                },
+
+                //传参
+                fun2(n1, n2, n3) {
+                    //console.log(n1, n2, n3);
+                    console.log(this); //打印vue实例，对比原生this是打印上下文
+                    console.log(this.value) //xh   vue实例上的所有东西都可以找到
+                    this.fun4()  //想在fun2中调用fun4不加this找不到
+                },
+
+                fun4() {
+                    console.log("woshifun4");
+                }
+
+                // fun2: (n1, n2, n3) => {
+                //     console.log(this); //箭头函数没有this指向 打印window
+                //     //console.log(n1, n2, n3);
+                // }
+
+            },
+        }); 
+    </script>
+</body>
+
+</html>

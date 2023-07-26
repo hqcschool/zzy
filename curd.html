@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <script src="cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th>邮箱</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 使用v-for指令循环渲染表格行 -->
+                <tr v-for="(user, index) in users" :key="user.id">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <button @click="editUser(index)">修改</button>
+                        <button @click="deleteUser(index)">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>添加用户</h2>
+        <form @submit.prevent="createUser">
+            <label for="name">姓名:</label>
+            <input type="text" v-model="newUser.name">
+
+            <label for="email">邮箱:</label>
+            <input type="email" v-model="newUser.email">
+
+            <button type="submit">确认添加</button>
+        </form>
+
+        <h2>修改用户</h2>
+        <form v-if="editingUser !== null" @submit.prevent="updateUser">
+            <label for="edit-name">姓名:</label>
+            <input type="text" v-model="editingUser.name">
+
+            <label for="edit-email">邮箱:</label>
+            <input type="email" v-model="editingUser.email">
+
+            <button type="submit">确认修改</button>
+            <button @click="cancelEdit">取消</button>
+        </form>
+    </div>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                users: [],
+                newUser: { name: "", email: "" },
+                editingUser: null
+            },
+            methods: {
+                createUser() {
+                    const newId = this.users.length + 1; // 递增的id
+                    const newUser = {
+                        id: newId,
+                        name: this.newUser.name,
+                        email: this.newUser.email
+                    };
+
+                    this.users.push(newUser);
+
+                    this.newUser.name = "";
+                    this.newUser.email = "";
+                },
+                editUser(index) {
+                    this.editingUser = { ...this.users[index] };
+                },
+                updateUser() {
+                    const index = this.users.findIndex(user => user.id === this.editingUser.id);
+                    if (index !== -1) {
+                        this.users.splice(index, 1, this.editingUser);
+                        this.cancelEdit();
+                    }
+                },
+                deleteUser(index) {
+                    this.users.splice(index, 1);
+                },
+                cancelEdit() {
+                    this.editingUser = null;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

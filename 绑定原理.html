@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- vm里面的属性 -->
+        {{$options}}
+        <input type='text' v-model="val">
+    </div>
+    <script>
+        // const vm = new Vue({
+        //     el: "#app",
+        //     data: {
+        //         val: "ikun",
+        //         ikun: '蔡徐坤'
+        //     },
+        // });
+        // console.log(vm);
+        var person = {
+            name: "张三",
+            sex: "男"
+        }
+        delete person.sex
+        person.name = '李四'  //修改name
+        //通过defineProperty给person对象添加一个age属性值为19
+        Object.defineProperty(person, "age", {
+            value: 19,
+            enumerable: true, //控制是否可枚举遍历  （console.log(person)中age颜色也变正常了）
+            writable: true,  //控制是否可以修改
+            configurable: true  //控制是否可以删除
+        })
+        person.age = 99  //修改age   不能被修改
+        delete person.age  //删除age   不能被删除
+        for (let key in person) {
+            console.log(key);  //没有age,添加属性不参加遍历枚举
+        }
+        console.log(person);
+        console.log(Object.keys(person));//提取对象的所有属性,变成一个数组.   没有age,添加属性不参加遍历枚举
+    </script>
+</body>
+
+</html>
