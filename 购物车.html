@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="购物车.css">
+</head>
+
+<body>
+
+    <div id="app">
+
+        <ul class="product-list">
+            <li v-for="item in products" :key="item.id">
+                <img :src="item.image" :alt="item.name" width="100" @dblclick="addToCart(item)" />
+                <div class="div">
+                    <pre>
+
+
+<span class="te">特卖价</span><span class="zi">￥{{ item.price }}</span> <span class="zi1">￥{{ item.price }}</span> <span class="zi2">{{ item.sale }}折</span>
+
+<span class="di">{{ item.li }}</span>
+<div id="div2">
+<span id="name">{{ item.name }}</span>
+<span>库存：{{ item.stock }}</span>
+</div>
+
+<span class="xin">{{ item.xin }}</span>
+                  </pre>
+                </div>
+
+            </li>
+        </ul>
+
+        <h2>购物车</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>商品</th>
+                    <th>单价</th>
+                    <th>数量</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in cart" :key="item.id">
+                    <td><input type="checkbox" v-model="item.checked" @change="resetTimer"></td>
+                    <td><img :src="item.image" :alt="item.name" width="50" /> {{ item.name }}</td>
+                    <td>{{ item.price }} 元</td>
+                    <td>
+                        <button @click="decreaseQuantity(item)" :disabled="item.quantity === 1">-</button>
+                        {{ item.quantity }}
+                        <button @click="increaseQuantity(item)" :disabled="item.quantity === item.stock">+</button>
+                    </td>
+                    <td><button @click="removeFromCart(item)">删除</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="checkout">
+            <label for="coupon">优惠券:</label>
+            <select id="coupon" v-model="selectedCoupon">
+                <option value="">无</option>
+                <option value="-10">-10 元</option>
+                <option value="-20">-20 元</option>
+                <option value="-50">-50 元</option>
+            </select>
+
+            <p>共有商品: {{ totalQuantity }} 件 - 总价: {{ total }} 元</p>
+
+            <button>立即结算</button>
+
+            倒计时: {{ timeLeft }} 秒
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                products: [
+                    { id: 1, li: '60天历史低价', stock: 20, xin: '新货上架', name: '2023最新款vans板鞋透气舒适假一赔百', price: 290, price2: 880, sale: 3.3, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvop/00611861/10006920/898494857-4042057948124340224-4042057948124340226-1_327x327_90.jpg' },
+                    { id: 2, stock: 20, xin: '新货上架', name: '2023夏季男背心潮流潮男舒适高街健身必备', li: '60天历史低价', price: 92, price2: 320, sale: 2.9, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/642962/2022/0707/117/8962153e-625b-4be3-8835-1b995df754a0_327x327_90.jpg' },
+                    { id: 3, stock: 20, xin: '新货上架', name: '夏季短袖T恤宽松百搭圆领男士套头情侣背心男士打底衫坎肩马甲', price: 106, price2: 380, sale: 2.8, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/642962/2022/0708/45/03770346-801d-4077-a180-c32511895964_327x327_90.jpg' },
+                    { id: 4, stock: 20, xin: '新货上架', name: '加厚拉杆行李箱万向轮20寸男女结实耐用旅行密码皮箱子24寸', price: 197, price2: 860, sale: 2.3, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcpos/1100000177/2023/0330/40/4e17c355-b2cb-4a59-85ba-c217b92fcc3f_327x327_90.jpg' },
+                    { id: 5, stock: 20, xin: '新货上架', name: '美肌沐浴露550ml*3', price: 97, price2: 390, sale: 2.5, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/616007/2021/0315/92/1b8bf2f4-817d-4234-a329-6403e68e7860_327x327_90.jpg' },
+                    { id: 6, stock: 20, xin: '新货上架', name: '行李箱拉杆箱女旅行密码皮箱子出差万向轮耐用结实学生大容量登机', price: 209, price2: 950, sale: 2.2, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcpos/1100010909/2023/0616/56/ade7a815-2b7b-4e23-abb3-41b6d12ece68_327x327_90.jpg' },
+                    { id: 7, li: '60天历史低价', stock: 20, xin: '新货上架', name: '【巨抗造】2023新款铝框拉杆行李箱学生24寸旅行密码皮箱男女', price: 247, price2: 1180, sale: 2.1, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcpos/1100004063/2021/0915/3/01fd2a7b-79f8-47a9-b2e3-171c8a093c23_327x327_90.jpg' },
+                    { id: 8, stock: 20, xin: '新货上架', name: '夏季新款时尚潮流百搭男士运动短裤舒适透气直筒裤男式休闲裤', price: 117, price2: 450, sale: 2.6, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/110401/2023/0308/169/a1d28210-d06d-48a3-ab5c-81e73bcfbea0_327x327_90.jpg' },
+                    { id: 9, stock: 20, xin: '新货上架', name: '【口碑好评 热销款短裤男】国潮短裤男夏舒适简约男士短裤夏凉', price: 151, price2: 560, sale: 2.7, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/607896/2021/0424/42/9e88cb72-24f3-4edc-807c-bb43a0a2e555_327x327_90.jpg' },
+                    { id: 10, li: '60天历史低价', stock: 20, xin: '新货上架', name: '抑菌洗手液225ml 健康抑菌99.9% 爽洁健康 家用便携装', price: 46, price2: 166, sale: 2.8, image: 'https://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/2023/06/20/142/b6defeac-61a1-4b64-b254-706f1593ed72_327x327_90.jpg' }
+                ],
+                cart: [],
+                selectedCoupon: '',
+                timeLeft: 60,
+                timerId: null
+            },
+            computed: {
+                total() {
+                    const total = this.cart.reduce((sum, item) => {
+                        if (item.checked) {
+                            return sum + item.price * item.quantity
+                        } else {
+                            return sum
+                        }
+                    }, 0)
+                    return total + Number(this.selectedCoupon)
+                },
+                totalQuantity() {
+                    return this.cart.reduce((sum, item) => {
+                        if (item.checked) {
+                            return sum + item.quantity
+                        } else {
+                            return sum
+                        }
+                    }, 0)
+                }
+            },
+            methods: {
+                addToCart(item) {
+                    const existingItem = this.cart.find(i => i.id === item.id)
+                    if (existingItem) {
+                        existingItem.quantity++
+                        item.stock--
+                    } else {
+                        this.cart.push({
+                            ...item,
+                            quantity: 1,
+                            checked: false
+                        })
+                        item.stock--
+                    }
+                    this.resetTimer()
+                },
+                removeFromCart(item) {
+                    const product = this.products.find(p => p.id === item.id)
+                    product.stock += item.quantity
+                    this.cart = this.cart.filter(i => i.id !== item.id)
+                    this.resetTimer()
+                },
+                increaseQuantity(item) {
+                    if (item.quantity < item.stock) {
+                        item.quantity++
+                        const product = this.products.find(p => p.id === item.id)
+                        product.stock--
+                    }
+                    this.resetTimer()
+                },
+                decreaseQuantity(item) {
+                    if (item.quantity > 1) {
+                        item.quantity--
+                        const product = this.products.find(p => p.id === item.id)
+                        product.stock++
+                    }
+                    this.resetTimer()
+                },
+                resetTimer() {
+                    clearInterval(this.timerId)
+                    this.timeLeft = 60
+                    this.timerId = setInterval(() => {
+                        if (this.timeLeft > 0) {
+                            this.timeLeft--
+                        } else {
+                            clearInterval(this.timerId)
+                            this.cart.forEach(item => item.checked = false)
+                        }
+                    }, 1000)
+                }
+            },
+            beforeDestroy() {
+                clearInterval(this.timerId)
+            }
+        });
+
+    </script>
+</body>
+
+</html>
